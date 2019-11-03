@@ -15,6 +15,8 @@ pdf_text(paste0("PDF/",file_vector[[2]])) %>%
     strsplit(split = "\n")
 
 
+# Tabla 1
+
 tablas <- vector("list", NROW(file_vector))
 
 for (i in seq_along(file_vector)) {
@@ -34,3 +36,54 @@ for (i in seq_along(file_vector)) {
 datos <- bind_rows(tablas)  
 
 save(datos, file = "Datos/datos_tabla1.Rds")
+
+# Tabla 2
+
+tablas2 <- vector("list", NROW(file_vector))
+
+for (i in seq_along(file_vector)) {
+    leer <- pdf_text(paste0("PDF/",file_vector[[i]])) %>% 
+        strsplit(split = "\n")
+    
+    
+    a<-paste(leer[[1]][validos])
+    b<- str_trim(a)
+    c<- strsplit(b,"[[:blank:]]")
+    c2<-lapply(c, function(x) x[!x %in% ""])
+    c3 <- rbindlist(lapply(c2, function(x) data.table((t(x)))),fill = TRUE) %>% 
+        dplyr::select(V1:V15) %>% mutate(archivo= !!file_vector[[i]])
+    tablas2[[i]] <- c3
+}
+
+datos <- bind_rows(tablas)  
+
+save(datos, file = "Datos/datos_tabla1.Rds")
+
+# LON-LAT
+
+#LATITUD<- substring(b, 68, 75) 
+#LONGITUD<- substring(b, 90, 98)
+#ALTITUD<- substring(b, 114, 124)
+
+
+tablas3 <- vector("list", NROW(file_vector))
+
+for (i in seq_along(file_vector)) {
+    leer <- pdf_text(paste0("PDF/",file_vector[[i]])) %>% 
+        strsplit(split = "\n")
+    validos <-leer[[1]][[5]]
+    
+    b<- str_trim(validos)
+    
+    c <- data.frame(
+    COD_ESTACION= gsub("_.*","",file_vector[[i]]),
+    LAT= gsub(".*(Latitud)","",b) %>% substring(., 3, 14) %>% str_trim(.),
+    LON= gsub(".*(Longitud)","",b)%>% substring(., 3, 15)%>% str_trim(.),
+    ALT= gsub(".*(Altitud)","",b)%>% substring(., 3, 15)%>% str_trim(.)
+    )
+    tablas3[[i]] <- c
+}
+
+datos3 <- bind_rows(tablas3)  
+
+save(datos3, file = "Datos/datos_encabezado.Rds")
