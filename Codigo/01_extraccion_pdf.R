@@ -44,20 +44,21 @@ tablas2 <- vector("list", NROW(file_vector))
 for (i in seq_along(file_vector)) {
     leer <- pdf_text(paste0("PDF/",file_vector[[i]])) %>% 
         strsplit(split = "\n")
+    validos <-grepl("(PREDOMINANTE)",leer[[1]])
     
-    
-    a<-paste(leer[[1]][validos])
+    a<-c(paste(leer[[1]][which(validos)]),paste(leer[[1]][which(validos)+1]))
     b<- str_trim(a)
-    c<- strsplit(b,"[[:blank:]]")
-    c2<-lapply(c, function(x) x[!x %in% ""])
-    c3 <- rbindlist(lapply(c2, function(x) data.table((t(x)))),fill = TRUE) %>% 
-        dplyr::select(V1:V15) %>% mutate(archivo= !!file_vector[[i]])
-    tablas2[[i]] <- c3
+    c <- substring(b,40,200)
+    c2<- strsplit(c,"[[:blank:]]")
+    c3<-lapply(c2, function(x) x[!x %in% ""])
+    c4 <- rbindlist(lapply(c3, function(x) data.table((t(x)))),fill = TRUE) %>% 
+        dplyr::select(V1:V12) %>% mutate(archivo= !!file_vector[[i]])
+    tablas2[[i]] <- c4
 }
 
-datos <- bind_rows(tablas)  
+datos2 <- bind_rows(tablas2)  
 
-save(datos, file = "Datos/datos_tabla1.Rds")
+save(datos2, file = "Datos/datos_tabla2.Rds")
 
 # LON-LAT
 
