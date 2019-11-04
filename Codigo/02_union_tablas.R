@@ -22,7 +22,7 @@ datos_encabezado <- datos_encabezado %>%
 
 
 datos_tabla1 <- datos_tabla1 %>% 
-    rename("ELEMENTOS"= "ELEMENTOS",
+    rename("ELEMENTOS"= "V1",
            "PERIODO1"= "V2",
            "PERIODO2"= "V3",
            "ENE"= "V4",
@@ -40,4 +40,6 @@ datos_tabla1 <- datos_tabla1 %>%
            "COD_ESTACION"= "archivo") %>% 
     mutate(COD_ESTACION= gsub("_.*","",COD_ESTACION))
 
-datos_tabla1 %>% gather
+datos_finales <- datos_encabezado %>% left_join(datos_tabla1)
+
+saveRDS(datos_finales, file="Datos/datos_finales.Rds")

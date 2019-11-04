@@ -29,7 +29,10 @@ for (i in seq_along(file_vector)) {
     
     a<-paste(leer[[1]][validos])
     b<- str_trim(a)
-    c<- strsplit(b,"[[:blank:]]")
+    b2<-  gsub(".*(VEL.)","VELOCIDAD",b)
+    b2<-  gsub(".*(TANQUE)","EVAPORACION",b2)
+    b2<-  gsub(".*(SOLAR)","BRILLO",b2)
+    c<- strsplit(b2,"[[:blank:]]")
     c2<-lapply(c, function(x) x[!x %in% ""])
     c3 <- rbindlist(lapply(c2, function(x) data.table((t(x)))),fill = TRUE) %>% 
         dplyr::select(V1:V15) %>% mutate(archivo= !!file_vector[[i]])
