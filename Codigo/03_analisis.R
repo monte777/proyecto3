@@ -35,6 +35,22 @@ rm(datos,datos1)
 
 #Primer ploteo
 tm_shape(provincias_sp) + 
-    tm_polygons()+
+    tm_polygons(col="white")+
     tm_shape(datos_sp) + 
-    tm_bubbles(size = "lluviaprom",alpha=0.3,col="navy")
+    tm_bubbles(size = "lluviaprom",alpha=0.9,col="steelblue",
+               title.size = "Lluvia promedio(mm)")+
+    tm_compass(type="rose",size =4, position = c(0.75,0.75))+
+    tm_scale_bar(position = c(0.40,0.04))
+
+#Análisis no Geospacial
+#Hacer regresiones IDW
+
+#Análisis Geoespacial
+plot(sort(datos_sp$lluviaprom))
+plot(datos_sp$alt,datos_sp$lluviaprom)
+plot(variogram(lluviaprom ~ 1, datos_sp))
+
+#Dados estos resultados debemos hacer una transformación no lineal
+#boxcox(lluviaprom~alt,data=as.data.frame(datos_sp))
+#
+
