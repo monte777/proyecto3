@@ -31,3 +31,10 @@ provincias_sp <- read_sf(dsn="Datos/provincias",layer = "provincias")
 
 rm(datos,datos1)
 
+
+
+#Primer ploteo
+tm_shape(provincias_sp) + 
+    tm_polygons()+
+    tm_shape(datos_sp) + 
+    tm_bubbles(size = "lluviaprom",alpha=0.3,col="navy")
