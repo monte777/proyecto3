@@ -7,9 +7,12 @@ library(data.table)
 library(stringr)
 library(RDS)
 
+# Path pdf
 
 file_vector <- list.files(path = "PDF/")
 file_vector %>% head()
+
+# Prueba
 
 pdf_text(paste0("PDF/",file_vector[[2]])) %>% 
     strsplit(split = "\n")
@@ -35,7 +38,7 @@ for (i in seq_along(file_vector)) {
 
 datos <- bind_rows(tablas)  
 
-save(datos, file = "Datos/datos_tabla1.Rds")
+saveRDS(datos, file = "Datos/datos_tabla1.Rds")
 
 # Tabla 2
 
@@ -58,7 +61,7 @@ for (i in seq_along(file_vector)) {
 
 datos2 <- bind_rows(tablas2)  
 
-save(datos2, file = "Datos/datos_tabla2.Rds")
+saveRDS(datos2, file = "Datos/datos_tabla2.Rds")
 
 # LON-LAT
 
@@ -87,4 +90,4 @@ for (i in seq_along(file_vector)) {
 
 datos3 <- bind_rows(tablas3)  
 
-save(datos3, file = "Datos/datos_encabezado.Rds")
+saveRDS(datos3, file = "Datos/datos_encabezado.Rds")
