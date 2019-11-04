@@ -27,5 +27,7 @@ datos1 <- datos %>%
     dplyr::select(cod,lat,lon,alt,lluviaprom)
 
 datos_sp <- st_as_sf(datos1,coords = c("lon","lat")) 
+provincias_sp <- read_sf(dsn="Datos/provincias",layer = "provincias")
 
 rm(datos,datos1)
+
