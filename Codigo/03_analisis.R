@@ -24,7 +24,8 @@ datos1 <- datos %>%
     mutate(cod = factor(cod_estacion)) %>% 
     group_by(cod) %>% 
     mutate(lluviaprom = mean(c(ene,feb,mar,abr,may,jun,jul,ago,set,oct,nov,dic))) %>% 
-    dplyr::select(cod,lat,lon,alt,lluviaprom)
+    dplyr::select(cod,lat,lon,alt,lluviaprom) %>% 
+    ungroup()
 
 datos_sp <- st_as_sf(datos1,coords = c("lon","lat")) 
 provincias_sp <- read_sf(dsn="Datos/provincias",layer = "provincias")
