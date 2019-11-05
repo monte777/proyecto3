@@ -10,6 +10,11 @@ library(rgdal)
 library(tidyverse)
 library(lattice)
 library(RColorBrewer)
+library(broom)
+library(ggplot2)
+library(kableExtra)
+library(ggfortify)
+        
 
 #cargamos los datos
 datos <- readRDS("Datos/datos_finales.Rds")
@@ -38,16 +43,25 @@ provincias_sp <- read_sf(dsn="Datos/provincias",layer = "provincias")
 
 rm(datos,datos1)
 
+Los datos IMN contienen información sobre la ubicación y mediciones de lluvia promedio en las **48** estaciones de medición del IMN distribuidas en diferentes puntos de Costa Rica.
 
 # Scrip clase
 
 print(xyplot(lluviaprom~alt, as.data.frame(datos_sp), asp = .8), split = 
           c(1, 1,2,1), more = TRUE)
 
-lm <- lm(lluviaprom~alt, datos_sp)
+lm <- lm(lluviaprom~1, datos_sp)
+lm_1 <- lm(lluviaprom~alt, datos_sp)
+
+tidy(summary(lm))%>%
+    knitr::kable("html",format.args = list(decimal.mark = ',', big.mark = ".")) %>%
+    kableExtra::kable_styling(c("striped"), full_width = F, position = "center")  %>%     kableExtra::add_header_above(c("Modelo LLuvia promedio media constante " = 5))
 
 datos_sp$fitted.s <- predict(lm, datos_sp) - mean(predict(lm, datos_sp))
 datos_sp$residuals <- residuals(lm)
+
+autoplot(lm,title = "Fig. 5 Gráficos de diagnóstico de Residuos varianza constante")
+autoplot(lm_1,title = "Fig. 5 Gráficos de diagnóstico de Residuos lluvia promedio ~ ALtura")
 
 # print(spplot(datos_sp, c("fitted.s", "residuals"), col.regions = pal(), cuts = 8, colorkey=TRUE), split = c(2,1,2,1))
 
@@ -60,6 +74,11 @@ as.data.frame(idw.out)[1:5,]
 lm_2 <- lm(lluviaprom~1,datos_sp_2)
 datos_sp_2$pred <- predict(lm_2, datos_sp_2)
 datos_sp_2$se.fit <- predict(lm_2, datos_sp_2, se.fit=TRUE)$se.fit
+
+tidy(summary(lm_2))%>%
+    knitr::kable("html",format.args = list(decimal.mark = ',', big.mark = ".")) %>%
+    kableExtra::kable_styling(c("striped"), full_width = F, position = "center")  %>%     kableExtra::add_header_above(c("Modelo segundo grado LLuvia promedio media constante " = 5))
+
 
 # Krige
 
@@ -142,4 +161,6 @@ get_geo_distance = function(long1, lat1, long2, lat2, units = "miles") {
     }
     distance
 }
+
+
 
