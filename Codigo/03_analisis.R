@@ -16,66 +16,76 @@ datos <- readRDS("Datos/datos_finales.Rds")
 #nombres de columnas en minúscula
 colnames(datos) <- tolower(colnames(datos))
 
-#
-#set.seed(1231)
-#s1 <- ts(as.numeric(datos[sample(1:289,1),8:19]))
-#s2 <- ts(as.numeric(datos[sample(1:289,1),8:19]))
-#s3 <- ts(as.numeric(datos[sample(1:289,1),8:19]))
-
-#autoplot(s3)
 #Pasar los datos a numericos
-#Media de temperatura
 datos1 <- datos %>% 
-    filter(elementos == "TEM.MED.") %>%
-    dplyr::select(cod_estacion,lat,lon,alt,ene,feb,mar,abr,may,jun,jul,ago,set,oct,nov,dic) %>% 
-    mutate_if(is.character,as.numeric) %>% 
-    mutate(cod = factor(cod_estacion)) %>% 
-    group_by(cod) %>% 
-    mutate(temp = mean(c(ene,feb,mar,abr,may,jun,jul,ago,set,oct,nov,dic))) %>% 
-    dplyr::select(cod,lat,lon,alt,temp) %>% 
-    ungroup()
-
-datos2 <- datos %>% 
     filter(elementos == "LLUVIA") %>%
-    dplyr::select(cod_estacion,ene,feb,mar,abr,may,jun,jul,ago,set,oct,nov,dic) %>% 
+    dplyr::select(cod_estacion,alt,ene,feb,mar,abr,may,jun,jul,ago,set,oct,nov,dic,lon,lat) %>% 
     mutate_if(is.character,as.numeric) %>% 
     mutate(cod = factor(cod_estacion)) %>% 
     group_by(cod) %>% 
-    mutate(lluvia = mean(c(ene,feb,mar,abr,may,jun,jul,ago,set,oct,nov,dic))) %>% 
-    dplyr::select(cod,lluvia) %>% 
+    mutate(lluvia_prom = mean(c(ene,feb,mar,abr,may,jun,jul,ago,set,oct,nov,dic)),
+           lluvia_med = median(c(ene,feb,mar,abr,may,jun,jul,ago,set,oct,nov,dic)),
+           lluvia_min = min(c(ene,feb,mar,abr,may,jun,jul,ago,set,oct,nov,dic)),
+           lluvia_max = max(c(ene,feb,mar,abr,may,jun,jul,ago,set,oct,nov,dic)))%>% 
+    dplyr::select(cod,alt,lluvia_prom,lluvia_med,lluvia_min,lluvia_max,lon,lat) %>% 
     ungroup()
-
-datos1 <- left_join(datos1,datos2, by="cod")
 
 datos_sp <- st_as_sf(datos1,coords = c("lon","lat")) 
 provincias_sp <- read_sf(dsn="Datos/provincias",layer = "provincias")
 
-rm(datos,datos1,datos2)
-
-#Primer ploteo
-#pdf("graficos/Figura1.pdf")
+rm(datos,datos1)
+#Plots 
 tm_shape(provincias_sp) + 
     tm_polygons(col="white")+
     tm_shape(datos_sp) + 
-    tm_bubbles(size = "lluvia",alpha=0.9,col="steelblue",
+    tm_bubbles(size = "lluvia_prom",alpha=0.9,col="steelblue",
                title.size = "Lluvia promedio(mm)")+
     tm_compass(type="rose",size =4, position = c(0.75,0.75))+
     tm_scale_bar(position = c(0.40,0.04))
-#dev.off()
 
-#pdf("graficos/Figura2.pdf")
 tm_shape(provincias_sp) + 
     tm_polygons(col="white")+
     tm_shape(datos_sp) + 
-    tm_bubbles(size = "temp",alpha=0.9,col="orange",
-               title.size = "Temperatura media(°C)")+
+    tm_bubbles(size = "lluvia_med",alpha=0.9,col="steelblue",
+               title.size = "Lluvia mediana(mm)")+
     tm_compass(type="rose",size =4, position = c(0.75,0.75))+
     tm_scale_bar(position = c(0.40,0.04))
 
-#dev.off()
+tm_shape(provincias_sp) + 
+    tm_polygons(col="white")+
+    tm_shape(datos_sp) + 
+    tm_bubbles(size = "lluvia_min",alpha=0.9,col="steelblue",
+               title.size = "Lluvia mínima(mm)")+
+    tm_compass(type="rose",size =4, position = c(0.75,0.75))+
+    tm_scale_bar(position = c(0.40,0.04))
+
+tm_shape(provincias_sp) + 
+    tm_polygons(col="white")+
+    tm_shape(datos_sp) + 
+    tm_bubbles(size = "lluvia_max",alpha=0.9,col="steelblue",
+               title.size = "Lluvia máxima(mm)")+
+    tm_compass(type="rose",size =4, position = c(0.75,0.75))+
+    tm_scale_bar(position = c(0.40,0.04))
+
+#Arreglar escala
+#Transformaciones
+
+data_sp <- datos_sp %>% 
+    st_set_crs(32617) %>% 
+    st_transform(crs=5367)
+
+prov_sp <- provincias_sp %>% 
+    st_set_crs(32617) %>% 
+    st_transform(crs=st_crs(5367))
+
+rm(datos_sp,provincias_sp)
+
 #Análisis no Geospacial
+
 #Hacer regresiones IDW
 
 #Análisis Geoespacial
-plot(datos_sp$temp,datos_sp$alt)
+hscat(lluvia_prom~1,data_sp,seq(1,3.4,0.3))
+
+v <- variogram(temp ~ 1, datos_sp)
 
