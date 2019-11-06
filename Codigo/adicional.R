@@ -1,4 +1,4 @@
-#Cargamos la librerías que se utilizarán
+# Cargamos la librerías que se utilizarán
 
 library(gstat)
 library(sf)
