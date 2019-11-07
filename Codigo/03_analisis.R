@@ -12,6 +12,7 @@ library(raster)
 library(RColorBrewer)
 library(tmaptools)
 library(gridExtra)
+library(lattice)
 
 #cargamos los datos
 datos <- readRDS("Datos/datos_finales.Rds")
@@ -198,6 +199,23 @@ pdf("Graficos/Variograma.pdf")
 plot(v3,pch=20,cex=1.5)
 dev.off()
 
+v <- variogram(lluvia_min ~ 1, data_sp)
+
+pdf("Graficos/Variograma2.pdf")
+print(xyplot(gamma ~ dist, v, pch = 3, type = 'b', lwd = 2, col = 'darkblue',
+             panel = function(x, y, ...) {
+                 for (i in 1:30) {
+                     data_sp$random = sample(data_sp$lluvia_min)
+                     v = variogram(random ~ 1, data_sp)
+                     llines(v$dist, v$gamma, col = 'grey')
+                 }
+                 panel.xyplot(x, y, ...)
+             },
+             xlab = 'distance', ylab = 'semivariance'
+))
+dev.off()
+
+
 f1 <- fit.variogram(v1, fit.ranges = FALSE, fit.sills = FALSE,
                     vgm(psill=6651, model="Mat", range=11, nugget=161,kappa = 2))
 pdf("Graficos/Vmedia.pdf")
@@ -274,3 +292,59 @@ tm_shape(r.m) +
     tm_shape(datos1) + tm_dots(size=0.3) +
     tm_layout(legend.show =F)
 dev.off()
+
+#Validación cruzada
+krg1.cv <- krige.cv(lluvia_prom~1,datos1,f1,nfold=5)
+krg2.cv <- krige.cv(lluvia_med~1,datos1,f2,nfold=5)
+krg3.cv <- krige.cv(lluvia_min~1,datos1,f3,nfold=5)
+krg4.cv <- krige.cv(lluvia_max~1,datos1,f4,nfold=5)
+
+pdf("Graficos/Res1.pdf")
+bubble(krg1.cv,"residual",main="")
+dev.off()
+
+pdf("Graficos/Res2.pdf")
+bubble(krg2.cv,"residual",main="")
+dev.off()
+
+pdf("Graficos/Res3.pdf")
+bubble(krg3.cv,"residual",main="")
+dev.off()
+
+pdf("Graficos/Res4.pdf")
+bubble(krg4.cv,"residual",main="")
+dev.off()
+
+# Validación cruzada Residuales
+set.seed(1231)
+al <- sample(1:48,10)
+m.model <- datos1[-al,]
+m.valid <- datos1[al,]
+
+v.ev1 <- fit.variogram(variogram(lluvia_prom~1,m.model), fit.ranges = FALSE, fit.sills = FALSE,
+                       vgm(psill=6651, model="Mat", range=11, nugget=161,kappa = 2))  
+v.ev2 <- fit.variogram(variogram(lluvia_med~1,m.model), fit.ranges = FALSE, fit.sills = FALSE,
+                       vgm(psill=10202, model="Ste", range=34, nugget=77,kappa = 2)) 
+v.ev3 <- fit.variogram(variogram(lluvia_min~1,m.model), fit.ranges = FALSE, fit.sills = FALSE,
+                       vgm(psill=3040, model="Ste", range=34, nugget=0,kappa = 2))
+v.ev4 <- fit.variogram(variogram(lluvia_max~1,m.model), fit.ranges = FALSE, fit.sills = FALSE,
+                       vgm(psill=15517, model="Sph", range=68, nugget=861)) 
+
+m.valid.pr1 <- krige(lluvia_prom~1,m.model,m.valid,v.ev1)
+m.valid.pr2 <- krige(lluvia_med~1,m.model,m.valid,v.ev2)
+m.valid.pr3 <- krige(lluvia_min~1,m.model,m.valid,v.ev3)
+m.valid.pr4 <- krige(lluvia_max~1,m.model,m.valid,v.ev4)
+
+resi1 <- m.valid$lluvia_prom - m.valid.pr1$var1.pred
+resi2 <- m.valid$lluvia_med - m.valid.pr2$var1.pred
+resi3 <- m.valid$lluvia_min - m.valid.pr3$var1.pred
+resi4 <- m.valid$lluvia_max - m.valid.pr4$var1.pred
+
+resi1.mean <- m.valid$lluvia_prom - mean(m.valid$lluvia_prom)
+resi2.mean <- m.valid$lluvia_med - mean(m.valid$lluvia_med)
+resi3.mean <- m.valid$lluvia_min - mean(m.valid$lluvia_min)
+resi4.mean <- m.valid$lluvia_max - mean(m.valid$lluvia_max)
+
+r2.1 <- 1 - (sum(resi1^2)/sum(resi1.mean))
+r2.2 <- 1 - (sum(resi2^2)/sum(resi2.mean))
+r2.3 <- 1 - (sum(resi3^2)/sum(resi3.mean))
