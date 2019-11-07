@@ -87,7 +87,7 @@ plot_max <- tm_shape(provincias_sp) +
     tm_scale_bar(position = c(0.40,0.04))
 
 #grid.arrange(plot_max,plot_min,plot_mean,plot_med,
-#             ncol = 2, nrow = 2)
+             ncol = 2, nrow = 2)
 
 #Arreglar escala
 #Transformaciones
