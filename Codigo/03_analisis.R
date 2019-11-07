@@ -159,25 +159,30 @@ tm_shape(r.m) +
     tm_layout(legend.show=F)
 dev.off()
 
+
 datos.idw <- gstat::idw(lluvia_min ~ 1, datos1, newdata=grd, idp=3.0)
 r <- raster(datos.idw)
 r.m <- mask(r, provincias)
 
+pdf("Graficos/Min2.pdf")
 tm_shape(r.m) + 
     tm_raster(n=10,palette = "-viridis", auto.palette.mapping = FALSE,
               title="LLuvia mínima(mm)") + 
     tm_shape(datos1) + tm_dots(size=0.3) +
-    tm_legend(legend.outside=TRUE)
+    tm_layout(legend.show = F)
+dev.off()
 
 datos.idw <- gstat::idw(lluvia_max ~ 1, datos1, newdata=grd, idp=3.0)
 r <- raster(datos.idw)
 r.m <- mask(r, provincias)
 
+pdf("Graficos/Max2.pdf")
 tm_shape(r.m) + 
     tm_raster(n=10,palette = "-viridis", auto.palette.mapping = FALSE,
               title="LLuvia máxima(mm)") + 
     tm_shape(datos1) + tm_dots(size=0.3) +
-    tm_legend(legend.outside=TRUE)
+    tm_layout(legend.show = F)
+dev.off()
 
 rm(datos.idw,r,r.m)
 
@@ -187,20 +192,30 @@ v2 <- variogram(lluvia_med~1,datos1)
 v3 <- variogram(lluvia_min~1,datos1)
 v4 <- variogram(lluvia_max~1,datos1)
 
-plot(v3)
+pdf("Graficos/Variograma.pdf")
+plot(v3,pch=20,cex=1.5)
+dev.off()
 
 f1 <- fit.variogram(v1, fit.ranges = FALSE, fit.sills = FALSE,
                     vgm(psill=6651, model="Mat", range=11, nugget=161,kappa = 2))
-plot(v1,f1)
+pdf("Graficos/Vmedia.pdf")
+plot(v1,f1,pch=20,cex=1.5)
+dev.off()
 f2 <- fit.variogram(v2, fit.ranges = FALSE, fit.sills = FALSE,
                     vgm(psill=10202, model="Ste", range=34, nugget=77,kappa = 2))
-plot(v2,f2)
+pdf("Graficos/Vmediana.pdf")
+plot(v2,f2,pch=20,cex=1.5)
+dev.off()
 f3 <- fit.variogram(v3, fit.ranges = FALSE, fit.sills = FALSE,
                     vgm(psill=3040, model="Ste", range=34, nugget=0,kappa = 2))
-plot(v3,f3)
+pdf("Graficos/Vmin.pdf")
+plot(v3,f3,pch=20,cex=1.5)
+dev.off()
 f4 <- fit.variogram(v4, fit.ranges = FALSE, fit.sills = FALSE,
                                 vgm(psill=15517, model="Sph", range=68, nugget=861))
-plot(v4,f4)
+pdf("Graficos/Vmax.pdf")
+plot(v4,f4,pch=20,cex=1.5)
+dev.off()
 
 #Kriging
 
@@ -210,38 +225,47 @@ krg3 <- krige(lluvia_min~1,datos1, grd, f3)
 krg4 <- krige(lluvia_max~1,datos1, grd, f4)
 
 r <- raster(krg1)
+r@data@values <- ifelse(r@data@values<100,100,r@data@values)
 r.m <- mask(r, provincias)
 
+pdf("Graficos/Media3.pdf")
 tm_shape(r.m) + 
     tm_raster(n=6,palette = "-viridis", auto.palette.mapping = FALSE,
               title="LLuvia promedio (mm)") + 
     tm_shape(datos1) + tm_dots(size=0.3) +
-    tm_legend(legend.outside=TRUE)
+    tm_layout(legend.show = F)
+dev.off()
 
 r <- raster(krg2)
+r@data@values <- ifelse(r@data@values<100,100,r@data@values)
 r.m <- mask(r, provincias)
 
+pdf("Graficos/Mediana3.pdf")
 tm_shape(r.m) + 
     tm_raster(n=10,palette = "-viridis", auto.palette.mapping = FALSE,
               title="LLuvia mediana(mm)") + 
     tm_shape(datos1) + tm_dots(size=0.3) +
-    tm_legend(legend.outside=TRUE)
+    tm_layout(legend.show =F)
+dev.off()
 
 r <- raster(krg3)
-r@data@values <- ifelse(r@data@values<100,100,r@data@values)
 r.m <- mask(r, provincias)
 
+pdf("Graficos/Min3.pdf")
 tm_shape(r.m) + 
     tm_raster(n=10,palette = "-viridis", auto.palette.mapping = FALSE,
               title="LLuvia mínima(mm)") + 
     tm_shape(datos1) + tm_dots(size=0.3) +
-    tm_legend(legend.outside=TRUE)
+    tm_layout(legend.show =F)
+dev.off()
 
 r <- raster(krg4)
 r.m <- mask(r, provincias)
 
+pdf("Graficos/Max3.pdf")
 tm_shape(r.m) + 
     tm_raster(n=10,palette = "-viridis", auto.palette.mapping = FALSE,
               title="LLuvia máxima(mm)") + 
     tm_shape(datos1) + tm_dots(size=0.3) +
-    tm_legend(legend.outside=TRUE)
+    tm_layout(legend.show =F)
+dev.off()
