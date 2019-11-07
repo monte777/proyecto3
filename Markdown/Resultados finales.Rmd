@@ -27,21 +27,29 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introducción
 
-Costa Rica se ubica en una región con caracteristicas tropicales con un entorno ecológico que comprende bosques, ríos, suelos y climas. Estos interactúan con condiciones de tropicales que son afectados por el relieve, la orientación noreste-sureste del sistema montañoso separa a Costa Rica en dos vertientes, Pacífica y Caribe, división que explica las distribución de la lluvia en el país [@manso_2005].   
+Costa Rica se ubica en una región con características tropicales con un entorno ecológico que comprende bosques, ríos, suelos y climas. Estos interactúan con condiciones de tropicales que son afectados por el relieve, la orientación noreste-sureste del sistema montañoso separa a Costa Rica en dos vertientes, Pacífica y Caribe, el primer régimen Pacífico presentan una época seca y lluviosa bien definida, mientras que el régimen Caribe no muestra una estación seca definida y con una importante precipitación lluviosa en todos los meses. La división de los regímenes explica las distribución de la lluvia en el país  [@manso_2005].
+
+En Instituto Meteorológico Nacional (IMN) de Costa Rica, ente científico que tiene a cargo la coordinación de todas las actividades meteorológicas y climatológicas, divide en 6 regiones el análisis del clima en el territorio nacional, Valle Central, Pacífico Norte, Pacífico Central Pacífico Sur, Vertiente del Caribe y Zona Norte.
+
+La región pacífico norte se ubica al noreste del país, zona llana, la influencia de los vientos y el relieve determinan la distribución mensual de la precipitación, anualmente presenta dos distribuciones marcadas, con precipitaciones muy bajas entre Noviembre y Abril, contrario, precipitaciones altas los demás meses.
+
+La región pacífico central cuenta con un potencial hídrico importante influenciado por el mar, la precipitación es mayor en los valles, cuenta con relieves variados y la precipitación es diferente en cada relieve, entre más al sur mayor precipitación. La presencia de inundaciones es común.
+
+El pacífico sur, con un componente hídrico importante producto del predominante relieve montañoso, es la zona más lluviosa del país, el periodo seco es muy corto.
+
+La región central, ubicada en la región tectovolcánica que encierra principalmente la zona urbana del gran área metropolitana de nuestro país, definido por dos valles (Occidental y Oriental), se puede encontrar un clima seco por influencia del pacífico y un clima templado en las zonas montañosas con lluvia y frío.
+
+La región norte, cuenta con llanura de fácil inundación por influencia del Caribe un bosque tropical húmedo, no cuenta con grandes ríos de agua, la precipitación es lluviosa todo el año, la tercera región más lluviosa.
+
+La región del caribe, es una región muy húmeda con un fuente hídrico importante, cuenta con dos subregiones (Caribe Norte, Caribe Sur), en esta región se presentan cambios extremos en la precipitaciones por eventos extremos de clima
+
+Los datos se obtienen del departamento de información (IMN), con información de 48 estaciones georeferenciadas por coordenadas geográficas, cada estación es un centro de medición controlado por el IMN, además están distribuidos estratégicamente en las 6 regiones de Costa Rica, en muchos casos la información cuenta las variables de precipitación, temperatura, humedad, viento, altitud y radiación, sin embargo, las únicas variables comparables y siempre presentes en los archivos son la precipitación mm y la altitud m.s.n.m.
+
+Para el análisis se utilizan 4 medidas estadísticas para evaluar la precipitación de la lluvia (promedio, mediana, mínimo y máximo) en todos los casos considerando valores anuales, por su parte (IMN, 2008) han observado que los valores anuales de precipitación capturan la señal de eventos extremos de menor escala temporal atribuibles a la variabilidad del clima.
 
 ## Desarrollo
 
-### Datos
 
-Los presentes datos son tomadas 
-
-### Métodos
-
-Las técnicas
-
-### Análisis
-
-El análisis
 
 ### Resultados
 
