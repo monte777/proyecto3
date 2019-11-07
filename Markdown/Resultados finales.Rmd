@@ -1,7 +1,7 @@
 ---
 title: "Proyecto 3"
 subtitle: "Análisis geoestadistico sobre la precipitación en Costa Rica"
-author: "Pablo Vivas & Pedro Montenegro"
+author: "Pablo Vivas, Pedro Montenegro"
 date: "07 de noviembre de 2019"
 output:
   pdf_document:
@@ -27,7 +27,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introducción
 
-En Costa Rica
+Costa Rica se ubica en una región con caracteristicas tropicales con un entorno ecológico que comprende bosques, ríos, suelos y climas. Estos interactúan con condiciones de tropicales que son afectados por el relieve, la orientación noreste-sureste del sistema montañoso separa a Costa Rica en dos vertientes, Pacífica y Caribe, división que explica las distribución de la lluvia en el país [@manso_2005].   
 
 ## Desarrollo
 
@@ -48,8 +48,6 @@ El análisis
 Los resultados
 
 ![Mapas sobre la precipitación según medida estadística](../Imagenes/plots.png)
-
-
 
 ## Discusión y conclusiones
 
