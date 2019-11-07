@@ -45,7 +45,8 @@ tm_shape(provincias_sp) +
     tm_shape(datos_sp) + 
     tm_bubbles(size = "lluvia_prom",alpha=0.9,col="steelblue",size.max = 800,
                title.size = "Lluvia promedio(mm)",legend.size.is.portrait = TRUE)+
-    tm_scale_bar(position = c(0.35,0.026),size = 5)
+    tm_scale_bar(position = c(0.35,0.026),size = 5)+
+    tm_layout(legend.text.size = 1.5)
 dev.off()
 
 pdf("Graficos/Fig2.pdf")
@@ -64,7 +65,8 @@ tm_shape(provincias_sp) +
     tm_shape(datos_sp) + 
     tm_bubbles(size = "lluvia_min",alpha=0.9,col="steelblue",size.max = 800,
                title.size = "Lluvia mínima(mm)",legend.size.is.portrait = TRUE)+
-    tm_scale_bar(position = c(0.35,0.026),size = 5)
+    tm_scale_bar(position = c(0.35,0.026),size = 5)+
+    tm_layout(legend.text.size = 1.5)
 dev.off()
 
 pdf("Graficos/Fig4.pdf")
@@ -103,28 +105,28 @@ pdf("Graficos/Media1.pdf")
 tm_shape(th.clp) + 
     tm_polygons(col="lluvia_prom",n=8, palette="-viridis", auto.palette.mapping=FALSE,
                 title="Lluvia promedio(mm)")+
-    tm_layout(legend.text.size = 0.9)
+    tm_layout(legend.text.size = 1.5)
 dev.off()
 
 pdf("Graficos/Mediana1.pdf")
 tm_shape(th.clp) + 
     tm_polygons(col="lluvia_med", palette="-viridis", auto.palette.mapping=FALSE,
                 title="Lluvia mediana(mm)")+
-    tm_layout(legend.text.size = 0.9)
+    tm_layout(legend.text.size = 1.5)
 dev.off()
 
 pdf("Graficos/Min1.pdf")
 tm_shape(th.clp) + 
     tm_polygons(col="lluvia_min", palette="-viridis", auto.palette.mapping=FALSE,
                 title="Lluvia mínima(mm)")+
-    tm_layout(legend.text.size = 0.9)
+    tm_layout(legend.text.size = 1.5)
 dev.off()
 
 pdf("Graficos/Max1.pdf")
 tm_shape(th.clp) + 
     tm_polygons(col="lluvia_max", palette="-viridis", auto.palette.mapping=FALSE,
                 title="Lluvia máxima(mm)")+
-    tm_layout(legend.text.size = 0.9)
+    tm_layout(legend.text.size = 1.5)
 dev.off()
 rm(th,th.z,th.spdf,th.clp)
 
@@ -249,6 +251,8 @@ tm_shape(r.m) +
 dev.off()
 
 r <- raster(krg3)
+r@data@values <- ifelse(r@data@values>200,200,r@data@values)
+r@data@values <- ifelse(r@data@values<0,0,r@data@values)
 r.m <- mask(r, provincias)
 
 pdf("Graficos/Min3.pdf")
@@ -260,6 +264,7 @@ tm_shape(r.m) +
 dev.off()
 
 r <- raster(krg4)
+summary(r@data@values)
 r.m <- mask(r, provincias)
 
 pdf("Graficos/Max3.pdf")
