@@ -20,6 +20,7 @@ library(gridExtra)
 #cargamos los datos
 datos <- readRDS("Datos/datos_finales.Rds")
 provincias_sp <- read_sf(dsn="Datos/provincias",layer = "provincias")
+dic_prov <- readRDS("Diccionario/dic_prov.Rds")
 
 #nombres de columnas en minúscula
 colnames(datos) <- tolower(colnames(datos))
@@ -37,21 +38,20 @@ datos1 <- datos %>%
         lluvia_med = median(c(ene,feb,mar,abr,may,jun,jul,ago,set,oct,nov,dic)),
         lluvia_min = min(c(ene,feb,mar,abr,may,jun,jul,ago,set,oct,nov,dic)),
         lluvia_max = max(c(ene,feb,mar,abr,may,jun,jul,ago,set,oct,nov,dic))
-        )%>% 
+        ) %>% 
     dplyr::select(cod,lat,lon,alt,lluvia_prom,lluvia_med,lluvia_min,lluvia_max) %>% 
-    ungroup()
+    ungroup() #%>% 
+    #left_join(dic_prov)
 
 # Conversión formato sf y sp
 
 datos_sp <- st_as_sf(datos1,coords = c("lon","lat")) 
+#datos_sp1 <- st_as_sf(datos1,coords = c("lon","lat")) 
 
 coordinates(datos1) <- c("lon", "lat")
 datos_sp_2 <- as(datos1, "SpatialPixelsDataFrame")
 
 #str(datos_sp_2)
-
-rm(datos,datos1)
-gc()
 
 #Plots 
 plot_mean <- tm_shape(provincias_sp) + 
@@ -91,7 +91,6 @@ plot_max <- tm_shape(provincias_sp) +
 
 #Arreglar escala
 #Transformaciones
-
 data_sp <- datos_sp %>% 
     st_set_crs(32617) %>% 
     st_transform(crs=5367)
@@ -100,7 +99,14 @@ prov_sp <- provincias_sp %>%
     st_set_crs(32617) %>% 
     st_transform(crs=st_crs(5367))
 
-rm(datos_sp,provincias_sp)
+# datos_u <- provincias_sp %>% 
+#     st_set_crs(32617) %>% 
+#     st_transform(crs=st_crs(5367)) %>% 
+#     left_join(datos1)
+# 
+# data_sp_2 <- st_as_sf(datos_u,coords = c("lon","lat")) 
+
+rm(datos_sp,provincias_sp,datos1)
 
 Los datos IMN contienen información sobre la ubicación y mediciones de lluvia promedio en las **48** estaciones de medición del IMN distribuidas en diferentes puntos de Costa Rica.
 
