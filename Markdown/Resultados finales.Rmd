@@ -1,0 +1,60 @@
+---
+title: "Proyecto 3"
+subtitle: "Análisis geoestadistico sobre la precipitación en Costa Rica"
+author: "Pablo Vivas & Pedro Montenegro"
+date: "07 de noviembre de 2019"
+output:
+  pdf_document:
+    dev: jpeg
+  html_document: default
+bibliography: bib_inicio.bib
+always_allow_html: yes
+fontsize: 12pt 
+header-includes:
+   \usepackage[spanish]{babel}
+   \usepackage{graphicx}
+   \usepackage{fancyhdr}
+   \pagestyle{fancy}
+   \setlength\headheight{28pt}
+   \fancyhead[L]{\includegraphics[width=5cm]{../Imagenes/ucr.png}}
+   \fancyfoot[LE,RO]{\textit{Maestría de Estadística}}
+   \fancypagestyle{plain}{\pagestyle{fancy}}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introducción
+
+En Costa Rica
+
+## Desarrollo
+
+### Datos
+
+Los presentes datos son tomadas 
+
+### Métodos
+
+Las técnicas
+
+### Análisis
+
+El análisis
+
+### Resultados
+
+Los resultados
+
+
+
+## Discusión y conclusiones
+
+sss
+
+## Apéndice 
+
+sss
+
+## Referencias
