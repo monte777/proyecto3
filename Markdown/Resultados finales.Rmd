@@ -47,6 +47,8 @@ El análisis
 
 Los resultados
 
+![Mapas sobre la precipitación según medida estadística](../Imagenes/plots.png)
+
 
 
 ## Discusión y conclusiones
