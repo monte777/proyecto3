@@ -245,7 +245,6 @@ krg3 <- krige(lluvia_min~1,datos1, grd, f3)
 krg4 <- krige(lluvia_max~1,datos1, grd, f4)
 
 r <- raster(krg1)
-r@data@values <- ifelse(r@data@values<100,100,r@data@values)
 r.m <- mask(r, provincias)
 
 pdf("Graficos/Media3.pdf")
@@ -257,7 +256,6 @@ tm_shape(r.m) +
 dev.off()
 
 r <- raster(krg2)
-r@data@values <- ifelse(r@data@values<100,100,r@data@values)
 r.m <- mask(r, provincias)
 
 pdf("Graficos/Mediana3.pdf")
@@ -269,8 +267,6 @@ tm_shape(r.m) +
 dev.off()
 
 r <- raster(krg3)
-r@data@values <- ifelse(r@data@values>200,200,r@data@values)
-r@data@values <- ifelse(r@data@values<0,0,r@data@values)
 r.m <- mask(r, provincias)
 
 pdf("Graficos/Min3.pdf")
@@ -282,7 +278,6 @@ tm_shape(r.m) +
 dev.off()
 
 r <- raster(krg4)
-summary(r@data@values)
 r.m <- mask(r, provincias)
 
 pdf("Graficos/Max3.pdf")
