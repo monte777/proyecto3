@@ -4,7 +4,7 @@ Los autores de este proyecto son:
 * Pedro Montenegro Masís ~ [montenegromasis@gmail.com](montenegromasis@gmail.com)
 * Pablo Vivas Corrales ~ [vivascorralespablo@gmal.com](vivascorralespablo@gmail.com)
 
-El trabajo escrito se puede encontrar en el siguiente [hipervínculo](https://www.overleaf.com/read/jbtpwdhysyhp).
+El trabajo escrito se puede encontrar en el siguiente [hipervínculo](https://www.overleaf.com/read/jbtpwdhysyhp) o en el archivo llamado `Trabajo_Escrito.pdf`
 
 La carpeta `PDF` contiene en formato `.pdf` que son los datos crudos que fueron enviados por la oficina de información del Instituto Meteorológico Nacional
 
