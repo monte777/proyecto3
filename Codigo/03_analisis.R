@@ -39,39 +39,43 @@ provincias_sp <- read_sf(dsn="Datos/provincias",layer = "provincias")
 rm(datos)
 
 #Plots iniciales
-
-p1 <- tm_shape(provincias_sp) + 
+pdf("Graficos/Fig1.pdf")
+tm_shape(provincias_sp) + 
     tm_polygons(col="white")+
     tm_shape(datos_sp) + 
     tm_bubbles(size = "lluvia_prom",alpha=0.9,col="steelblue",size.max = 800,
                title.size = "Lluvia promedio(mm)",legend.size.is.portrait = TRUE)+
     tm_scale_bar(position = c(0.35,0.026),size = 5)
+dev.off()
 
-p2 <- tm_shape(provincias_sp) + 
+pdf("Graficos/Fig2.pdf")
+tm_shape(provincias_sp) + 
     tm_polygons(col="white")+
     tm_shape(datos_sp) + 
     tm_bubbles(size = "lluvia_med",alpha=0.9,col="steelblue",size.max=800,
                title.size = "Lluvia mediana(mm)",legend.size.show=F)+
     tm_compass(type="rose",size =4, position = c(0.79,0.75))+
     tm_scale_bar(position = c(0.35,0.026),size = 5)
+dev.off()
 
-p3 <- tm_shape(provincias_sp) + 
+pdf("Graficos/Fig3.pdf")
+tm_shape(provincias_sp) + 
     tm_polygons(col="white")+
     tm_shape(datos_sp) + 
     tm_bubbles(size = "lluvia_min",alpha=0.9,col="steelblue",size.max = 800,
                title.size = "Lluvia mínima(mm)",legend.size.is.portrait = TRUE)+
     tm_scale_bar(position = c(0.35,0.026),size = 5)
+dev.off()
 
-p4 <- tm_shape(provincias_sp) + 
+pdf("Graficos/Fig4.pdf")
+tm_shape(provincias_sp) + 
     tm_polygons(col="white")+
     tm_shape(datos_sp) + 
     tm_bubbles(size = "lluvia_max",alpha=0.9,col="steelblue",size.max = 800,
                title.size = "Lluvia máxima(mm)",legend.size.show=F)+
     tm_compass(type="rose",size =4, position = c(0.79,0.75))+
     tm_scale_bar(position = c(0.35,0.026),size = 5)
-
-#grid.arrange(p1,p2,p3,p4,ncol = 2, nrow = 2)
-rm(p1,p2,p3,p4)
+dev.off()
 
 #Leer datos como sp
 coordinates(datos1) <- c("lon", "lat") 
@@ -82,8 +86,8 @@ provincias <- spTransform(provincias, coord)
 projection(datos1) <- projection(provincias)
 datos1@bbox <- provincias@bbox
 
-plot(provincias)
-plot(datos1,add=T)
+#plot(provincias)
+#plot(datos1,add=T)
 rm(coord,datos_sp,provincias_sp)
 #Análisis no Geospacial
 #Hacer regresiones IDW
@@ -95,21 +99,33 @@ th.z     <- over(th, datos1, fn=mean)
 th.spdf  <-  SpatialPolygonsDataFrame(th, th.z)
 th.clp   <- raster::intersect(provincias,th.spdf)
 
+pdf("Graficos/Media1.pdf")
 tm_shape(th.clp) + 
-    tm_polygons(col="lluvia_prom", palette="-viridis", auto.palette.mapping=FALSE,
-                title="Lluvia promedio(mm)")
+    tm_polygons(col="lluvia_prom",n=8, palette="-viridis", auto.palette.mapping=FALSE,
+                title="Lluvia promedio(mm)")+
+    tm_layout(legend.text.size = 0.9)
+dev.off()
 
+pdf("Graficos/Mediana1.pdf")
 tm_shape(th.clp) + 
     tm_polygons(col="lluvia_med", palette="-viridis", auto.palette.mapping=FALSE,
-                title="Lluvia mediana(mm)")
+                title="Lluvia mediana(mm)")+
+    tm_layout(legend.text.size = 0.9)
+dev.off()
 
+pdf("Graficos/Min1.pdf")
 tm_shape(th.clp) + 
     tm_polygons(col="lluvia_min", palette="-viridis", auto.palette.mapping=FALSE,
-                title="Lluvia mínima(mm)")
+                title="Lluvia mínima(mm)")+
+    tm_layout(legend.text.size = 0.9)
+dev.off()
 
+pdf("Graficos/Max1.pdf")
 tm_shape(th.clp) + 
     tm_polygons(col="lluvia_max", palette="-viridis", auto.palette.mapping=FALSE,
-                title="Lluvia máxima(mm)")
+                title="Lluvia máxima(mm)")+
+    tm_layout(legend.text.size = 0.9)
+dev.off()
 rm(th,th.z,th.spdf,th.clp)
 
 #IDW
@@ -123,21 +139,25 @@ datos.idw <- gstat::idw(lluvia_prom ~ 1, datos1, newdata=grd, idp=3.0)
 r <- raster(datos.idw)
 r.m <- mask(r, provincias)
 
+pdf("Graficos/Media2.pdf")
 tm_shape(r.m) + 
-    tm_raster(n=10,palette = "-viridis", auto.palette.mapping = FALSE,
+    tm_raster(n=8,palette = "-viridis", auto.palette.mapping = FALSE,
               title="LLuvia promedio(mm)") + 
     tm_shape(datos1) + tm_dots(size=0.3) +
-    tm_legend(legend.outside=TRUE)
+    tm_layout(legend.show = F)
+dev.off()
 
 datos.idw <- gstat::idw(lluvia_med ~ 1, datos1, newdata=grd, idp=3.0)
 r <- raster(datos.idw)
 r.m <- mask(r, provincias)
 
+pdf("Graficos/Mediana2.pdf")
 tm_shape(r.m) + 
     tm_raster(n=10,palette = "-viridis", auto.palette.mapping = FALSE,
               title="LLuvia mediana(mm)") + 
     tm_shape(datos1) + tm_dots(size=0.3) +
-    tm_legend(legend.outside=TRUE)
+    tm_layout(legend.show=F)
+dev.off()
 
 datos.idw <- gstat::idw(lluvia_min ~ 1, datos1, newdata=grd, idp=3.0)
 r <- raster(datos.idw)
@@ -193,7 +213,7 @@ r <- raster(krg1)
 r.m <- mask(r, provincias)
 
 tm_shape(r.m) + 
-    tm_raster(n=10,palette = "-viridis", auto.palette.mapping = FALSE,
+    tm_raster(n=6,palette = "-viridis", auto.palette.mapping = FALSE,
               title="LLuvia promedio (mm)") + 
     tm_shape(datos1) + tm_dots(size=0.3) +
     tm_legend(legend.outside=TRUE)
@@ -208,6 +228,7 @@ tm_shape(r.m) +
     tm_legend(legend.outside=TRUE)
 
 r <- raster(krg3)
+r@data@values <- ifelse(r@data@values<100,100,r@data@values)
 r.m <- mask(r, provincias)
 
 tm_shape(r.m) + 
